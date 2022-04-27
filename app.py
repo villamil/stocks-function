@@ -7,7 +7,8 @@ def handler(event, context):
     if "ticker" in event:
         client = boto3.client('kinesis')
 
-        stockData = yf.download(event['ticker'], period="2y", interval="1h")
+        stockData = yf.download(event['ticker'])
+        # stockData = yf.download(event['ticker'], period="2y", interval="1h")
 
         with io.StringIO() as csv_buffer:
             stockData.to_csv(csv_buffer, index=False)
