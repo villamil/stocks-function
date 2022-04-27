@@ -3,7 +3,7 @@ import boto3
 import uuid
 import io
 
-def handler(event, context):
+def lambda_handler(event, context):
     if "ticker" in event:
         client = boto3.client('kinesis')
 
