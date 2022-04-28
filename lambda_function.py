@@ -11,7 +11,7 @@ def lambda_handler(event, context):
         # stockData = yf.download(event['ticker'], period="2y", interval="1h")
 
         with io.StringIO() as csv_buffer:
-            stockData.to_csv(csv_buffer, index=False)
+            stockData.to_csv(csv_buffer)
             response = client.put_record(
                 StreamName='stocks',
                 Data=csv_buffer.getvalue(),
