@@ -12,14 +12,21 @@ def lambda_handler(event, context):
         stockData['ticker'] = event['ticker']
         stockData['period'] = event['period']
         stockData['interval'] = event['interval']
-        with io.StringIO() as csv_buffer:
-            stockData.to_csv(csv_buffer)
-            response = client.put_record(
+        response = client.put_record(
                 StreamName='stocks',
-                Data=csv_buffer.getvalue(),
+                Data=stockData.to_json(),
                 PartitionKey=str(uuid.uuid4())
             )
-            return response
+        return response
+            
+        # with io.StringIO() as csv_buffer:
+        #     stockData.to_csv(csv_buffer)
+        #     response = client.put_record(
+        #         StreamName='stocks',
+        #         Data=csv_buffer.getvalue(),
+        #         PartitionKey=str(uuid.uuid4())
+        #     )
+        #     return response
     else:
         return "Send a ticker"
 
