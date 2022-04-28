@@ -4,7 +4,6 @@ import uuid
 import io
 
 def lambda_handler(event, context):
-    return "hello there"
     if "ticker" in event:
         client = boto3.client('kinesis')
 
