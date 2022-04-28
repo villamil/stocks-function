@@ -1,34 +1,25 @@
 import yfinance as yf
 import boto3
 import uuid
-import io
+import requests 
+import os
 
 def lambda_handler(event, context):
-    if "ticker" in event:
+    if "symbol" in event and "interval" in event:
         client = boto3.client('kinesis')
 
-        stockData = yf.download(event['ticker'], period=event['period'], interval=event['interval'])
-        # stockData = yf.download(event['ticker'], period="2y", interval="1h")
-        stockData['ticker'] = event['ticker']
-        stockData['period'] = event['period']
-        stockData['interval'] = event['interval']
+        apikey = os.environ['API_KEY']
+
+        req = requests.get('https://api.twelvedata.com/time_series?symbol={symbol}&interval={interval}&format=CSV&apikey={apikey}'.format(symbol=event['symbol'], interval=event['interval'], apikey=apikey ))
+        url_content = req.content
         response = client.put_record(
-                StreamName='stocks',
-                Data=stockData.to_json(),
-                PartitionKey=str(uuid.uuid4())
-            )
+            StreamName='stocks',
+            Data=url_content,
+            PartitionKey=str(uuid.uuid4())
+        )
         return response
-            
-        # with io.StringIO() as csv_buffer:
-        #     stockData.to_csv(csv_buffer)
-        #     response = client.put_record(
-        #         StreamName='stocks',
-        #         Data=csv_buffer.getvalue(),
-        #         PartitionKey=str(uuid.uuid4())
-        #     )
-        #     return response
     else:
-        return "Send a ticker"
+        return "Send a symbol and an interval"
 
 
 # docker build -t stocks-info . 
