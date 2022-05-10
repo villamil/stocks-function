@@ -18,6 +18,4 @@ phases:
       - echo "Updating lambda Function..."
       - aws s3 cp --acl private deployment_package.zip s3://villamil-stocks-lambda-ingestion/deployment_package.zip
       - aws lambda update-function-code --function-name stocks-function --s3-bucket villamil-stocks-lambda-ingestion --s3-key deployment_package.zip
-      # - aws lambda update-function-code --function-name stocks-function --zip-file fileb://deployment_package.zip
       - echo "DONE!!"
-
